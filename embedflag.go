@@ -12,7 +12,7 @@ package gorocksdb
 import "C"
 
 import (
-	_ "github.com/cockroachdb/c-lz4"
+	_ "github.com/DataDog/golz4"
 	_ "github.com/cockroachdb/c-rocksdb"
 	_ "github.com/cockroachdb/c-snappy"
 )

@@ -691,6 +691,38 @@ func (db *DB) SetOptions(keys, values []string) error {
 	return nil
 }
 
+// SetOptionsCF dynamically changes options on a column family through the SetOptionsCF API.
+func (db *DB) SetOptionsCF(cf *ColumnFamilyHandle, keys, values []string) error {
+	num_keys := len(keys)
+
+	if num_keys == 0 {
+		return nil
+	}
+
+	cKeys := make([]*C.char, num_keys)
+	cValues := make([]*C.char, num_keys)
+	for i := range keys {
+		cKeys[i] = C.CString(keys[i])
+		cValues[i] = C.CString(values[i])
+	}
+
+	var cErr *C.char
+
+	C.rocksdb_set_options_cf(
+		db.c,
+		cf.c,
+		C.int(num_keys),
+		&cKeys[0],
+		&cValues[0],
+		&cErr,
+	)
+	if cErr != nil {
+		defer C.rocksdb_free(unsafe.Pointer(cErr))
+		return errors.New(C.GoString(cErr))
+	}
+	return nil
+}
+
 // LiveFileMetadata is a metadata which is associated with each SST file.
 type LiveFileMetadata struct {
 	Name        string

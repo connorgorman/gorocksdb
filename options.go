@@ -1211,3 +1211,8 @@ func (opts *Options) Destroy() {
 	opts.env = nil
 	opts.bbto = nil
 }
+
+// UnsafeGetOptions returns the underlying c options.
+func (opts *Options) UnsafeGetOptions() unsafe.Pointer {
+	return unsafe.Pointer(opts.c)
+}
